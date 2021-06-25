@@ -44,7 +44,7 @@ interface SfdxApexExecuteException {
 
 // todo: there's probably more cleaning to do
 const sanitize = (text: string) =>
-  text?.replace("'", "\\'").replace("\n", "\\n");
+  text?.replaceAll("'", "\\'").replaceAll("\n", "\\n");
 const contextVarsApex = (stdin: string, args: JsonMap) =>
   `final Map<String, String> args = (Map<String, String>) JSON.deserialize('${sanitize(
     JSON.stringify(args)
