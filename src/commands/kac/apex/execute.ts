@@ -53,7 +53,10 @@ const addContext = (context: string, script: string) => `${context}\n${script}`;
 const countLines = (text: string) => text.split("\n").length;
 const debugOnly = (log: string) =>
   log
-    .split("\n")
+    // debug statements can have newlines in them so this craziness is required
+    // ?= is a positive lookahead, so it asserts that the timestamp is at the 
+    // beginning of the line, but does not include the timestamp in the separator
+    .split(/^(?=\d{2}:\d{2}:\d{2}\.\d{1,3} \(\d+\)\|)/m)
     .filter((line) => /\|USER_DEBUG\|/.test(line))
     .map((line) => line.split("|")[4])
     .join("\n");
