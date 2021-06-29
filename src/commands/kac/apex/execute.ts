@@ -56,7 +56,7 @@ const debugOnly = (log: string) =>
     // debug statements can have newlines in them so this craziness is required
     // ?= is a positive lookahead, so it asserts that the timestamp is at the 
     // beginning of the line, but does not include the timestamp in the separator
-    .split(/^(?=\d{2}:\d{2}:\d{2}\.\d{1,3} \(\d+\)\|)/m)
+    .split(/\n(?=\d{2}:\d{2}:\d{2}\.\d{1,3} \(\d+\)\|)/)
     .filter((line) => /\|USER_DEBUG\|/.test(line))
     .map((line) => line.split("|")[4])
     .join("\n");
