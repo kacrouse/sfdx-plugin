@@ -58,7 +58,8 @@ const debugOnly = (log: string) =>
     // beginning of the line, but does not include the timestamp in the separator
     .split(/\n(?=\d{2}:\d{2}:\d{2}\.\d{1,3} \(\d+\)\|)/)
     .filter((line) => /\|USER_DEBUG\|/.test(line))
-    .map((line) => line.split("|")[4])
+    // grab the debug portion, unescape pipe chars
+    .map((line) => line.split("|")[4].replaceAll("&#124;", "|"))
     .join("\n");
 
 export default class ExecuteApex extends SfdxCommand {
