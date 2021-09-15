@@ -40,8 +40,8 @@ const toTableArray = (records) => {
   return [columns, ...data];
 };
 
-const sleep = async (seconds: number): Promise<void> =>
-  new Promise((resolve) => setTimeout(() => resolve(), seconds * 1000));
+const sleep = async (milliseconds: number): Promise<void> =>
+  new Promise((resolve) => setTimeout(() => resolve(), milliseconds));
 
 export default class Poll extends SfdxCommand {
   public static description =
@@ -52,8 +52,8 @@ export default class Poll extends SfdxCommand {
   protected static flagsConfig = {
     interval: flags.integer({
       char: "i",
-      description: "The interval in seconds at which to poll.",
-      default: 2,
+      description: "The interval in milliseconds at which to poll.",
+      default: 2000,
     }),
   };
 
