@@ -2,23 +2,42 @@ import { flags, SfdxCommand } from "@salesforce/command";
 import { QueryResult } from "jsforce";
 import { table } from "table";
 import logUpdate from "log-update";
-import 'colors';
+import stripAnsi from "strip-ansi";
+import chalk from "chalk";
 
 const toViewableValue = (rawValue) => {
-    if (rawValue && typeof rawValue === 'object') {
-        const {attributes, ...values} = rawValue;
-        return JSON.stringify(values);
-    }
-    return rawValue;
-}
+  if (rawValue && typeof rawValue === "object") {
+    const { attributes, ...values } = rawValue;
+    return JSON.stringify(values);
+  }
+  return rawValue;
+};
+
+const addStyles = (newTable, previousTable) => {
+  const styledTable = [...newTable];
+  if (previousTable) {
+    styledTable.forEach((row, i) =>
+      row.forEach((value, j) => {
+        const previousValue = previousTable[i] && previousTable[i][j];
+        if (stripAnsi("" + previousValue) !== stripAnsi("" + value)) {
+          newTable[i][j] = chalk.black.bgYellow("" + newTable[i][j]);
+        }
+      })
+    );
+  }
+  styledTable[0].map((c: string) => chalk.bold(c));
+  return styledTable;
+};
 
 const toTableArray = (records) => {
   if (!records) {
     return [];
   }
   const columns = Object.keys(records[0]).filter((c) => c !== "attributes");
-  const data = records.map((record) => columns.map((column) => toViewableValue(record[column])));
-  return [columns.map((c) => c.bold), ...data];
+  const data = records.map((record) =>
+    columns.map((column) => toViewableValue(record[column]))
+  );
+  return [columns, ...data];
 };
 
 const sleep = async (seconds: number): Promise<void> =>
@@ -47,6 +66,7 @@ export default class Poll extends SfdxCommand {
     const conn = this.org.getConnection();
 
     let result: QueryResult<JSON>;
+    let previousTable;
     while (true) {
       try {
         result = await conn.query(query);
@@ -54,7 +74,10 @@ export default class Poll extends SfdxCommand {
         console.error(e);
         return;
       }
-      logUpdate(table(toTableArray(result["records"])));
+      const tableArray = toTableArray(result["records"]);
+      const tableStr = table(addStyles(tableArray, previousTable));
+      logUpdate(tableStr);
+      previousTable = tableArray;
       await sleep(interval);
     }
 
