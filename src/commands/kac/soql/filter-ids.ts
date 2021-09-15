@@ -1,6 +1,6 @@
 import { flags, SfdxCommand } from "@salesforce/command";
 import { readFileSync } from "fs";
-import { QueryResult, SObject } from "jsforce";
+import { QueryResult } from "jsforce";
 
 export default class FilterIds extends SfdxCommand {
   public static description = "Filter IDs provided through stdin.";
@@ -35,7 +35,7 @@ export default class FilterIds extends SfdxCommand {
       query += ` AND (${filter})`;
     }
 
-    let result: QueryResult<SObject>;
+    let result: QueryResult<JSON>;
     try {
       result = await conn.query(query);
     } catch (e) {
@@ -48,6 +48,6 @@ export default class FilterIds extends SfdxCommand {
       return;
     }
 
-    result.records.forEach((r) => console.log(r.Id));
+    result.records.forEach((r) => console.log(r['Id']));
   }
 }

@@ -1,5 +1,5 @@
 import { flags, SfdxCommand } from "@salesforce/command";
-import { QueryResult, SObject } from "jsforce";
+import { QueryResult } from "jsforce";
 import { table } from "table";
 import logUpdate from "log-update";
 import 'colors';
@@ -46,7 +46,7 @@ export default class Poll extends SfdxCommand {
 
     const conn = this.org.getConnection();
 
-    let result: QueryResult<SObject>;
+    let result: QueryResult<JSON>;
     while (true) {
       try {
         result = await conn.query(query);
