@@ -53,7 +53,7 @@ export default class Poll extends SfdxCommand {
     interval: flags.integer({
       char: "i",
       description: "The interval in milliseconds at which to poll.",
-      default: 2000,
+      default: 1000,
     }),
   };
 
@@ -73,6 +73,10 @@ export default class Poll extends SfdxCommand {
       } catch (e) {
         console.error(e);
         return;
+      }
+      if (result['records'].length === 0) {
+          console.log('No records found');
+          return;
       }
       const tableArray = toTableArray(result["records"]);
       const tableStr = table(addStyles(tableArray, previousTable));
