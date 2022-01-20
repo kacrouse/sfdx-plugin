@@ -54,7 +54,7 @@ const countLines = (text: string) => text.split("\n").length;
 const debugOnly = (log: string) =>
   log
     // debug statements can have newlines in them so this craziness is required
-    // ?= is a positive lookahead, so it asserts that the timestamp is at the 
+    // ?= is a positive lookahead, so it asserts that the timestamp is at the
     // beginning of the line, but does not include the timestamp in the separator
     .split(/\n(?=\d{2}:\d{2}:\d{2}\.\d{1,3} \(\d+\)\|)/)
     .filter((line) => /\|USER_DEBUG\|/.test(line))
@@ -64,7 +64,7 @@ const debugOnly = (log: string) =>
 
 export default class ExecuteApex extends SfdxCommand {
   public static description =
-    "Run an Apex Anonymous script, with the ability to pass in variables from the command line and read from stdin.";
+    "Run an Apex Anonymous script, with the ability to pass in variables from the command line and read from stdin. stdin can be accessed in the script via a String variable named `stdin`. Arguments can be accessed via a Map<String, String>  variable named `args`.";
 
   static varargs = true;
 
